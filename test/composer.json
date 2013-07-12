@@ -1,0 +1,5 @@
+{
+	"require": {
+		"yarco/php-schema": "dev-master"
+	}
+}

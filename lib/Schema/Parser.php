@@ -14,21 +14,10 @@ namespace Schema;
 // schema dir contains schemas
 if (!defined('SCHEMA_DIR')) define('SCHEMA_DIR', __DIR__ . '/schemas');
 
-// utility functions
-function is_date($string)
-{
-	return preg_match('/^\d{1,4}-\d{1,2}(?:-\d{1,2})?$/', $string);
-}
-
-function is_time($string)
-{
-	return preg_match('/^\d{1,2}:\d{1,2}(?::\d{1,2})?$/', $string);
-}
-
-function is_datetime($string)
-{
-	return preg_match('/^\d{1,4}-\d{1,2}(?:-\d{1,2})?\s\d{1,2}:\d{1,2}(?:\:\d{1,2})?$/', $string);
-}
+// regular express
+define('RE_DATE', '/^\d{1,4}-\d{1,2}(?:-\d{1,2})?$/');
+define('RE_TIME', '/^\d{1,2}:\d{1,2}(?::\d{1,2})?$/');
+define('RE_DATETIME', '/^\d{1,4}-\d{1,2}(?:-\d{1,2})?\s\d{1,2}:\d{1,2}(?:\:\d{1,2})?$/');
 
 class Parser
 {
@@ -46,7 +35,6 @@ class Parser
 		$schemaInfo = parse_ini_file($file, true);
 
 		$ret = array();
-
 /* TODO:
 # from doctrine doc
 Decimal (restricted floats, NOTE Only works with a setlocale() configuration that uses decimal points!)
@@ -66,28 +54,28 @@ const GUID = 'guid';
 */
 		// try to guess each field
 		foreach($schemaInfo['fields'] as $fieldName => $fieldExample) {
-			if (is_bool($fieldExample)) {
-				$ret[] = sprintf("%s boolean", $fieldName);
-			} else if (is_int($fieldExample)) {
-				$ret[] = sprintf("%s integer", $fieldName);
-			} else if (is_float($fieldExample)) {
-				$ret[] = sprintf("%s float", $fieldName);
-			} else if (is_date($fieldExample)) {
-				$ret[] = sprintf("%s date", $fieldName);
-			} else if (is_time($fieldExample)) {
-				$ret[] = sprintf("%s time", $fieldName);
-			} else if (is_datetime($fieldExample)) {
-				$ret[] = sprintf("%s datetime", $fieldName);
+			if ($fieldExample === '' || $fieldExample === '0' || filter_var($fieldExample, FILTER_VALIDATE_BOOLEAN)) {
+				$ret[$fieldName] = array('fieldName' => $fieldName, 'type' => 'boolean', 'length' => null);
+			} else if (filter_var($fieldExample, FILTER_VALIDATE_INT)) {
+				$ret[$fieldName] = array('fieldName' => $fieldName, 'type' => 'integer', 'length' => null);
+			} else if (filter_var($fieldExample, FILTER_VALIDATE_FLOAT)) {
+				$ret[$fieldName] = array('fieldName' => $fieldName, 'type' => 'float', 'length' => null);
+			} else if (filter_var($fieldExample, FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => RE_DATE)))) {
+				$ret[$fieldName] = array('fieldName' => $fieldName, 'type' => 'date', 'length' => null);
+			} else if (filter_var($fieldExample, FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => RE_TIME)))) {
+				$ret[$fieldName] = array('fieldName' => $fieldName, 'type' => 'time', 'length' => null);
+			} else if (filter_var($fieldExample, FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => RE_DATETIME)))) {
+				$ret[$fieldName] = array('fieldName' => $fieldName, 'type' => 'datetime', 'length' => null);
 			} else if (is_string($fieldExample)) {
 				if (strlen($fieldExample) < 80) {
-					$ret[] = sprintf("%s string", $fieldName);
+					$ret[$fieldName] = array('fieldName' => $fieldName, 'type' => 'string', 'length' => null);
 				} else {
-					$ret[] = sprintf("%s text", $fieldName);
+					$ret[$fieldName] = array('fieldName' => $fieldName, 'type' => 'text', 'length' => null);
 				}
 			}
 		}
 
-		return implode(' ', $ret);
+		return $ret;
 	}/*}}}*/
 }
 
