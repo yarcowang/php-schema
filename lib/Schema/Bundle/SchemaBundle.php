@@ -12,6 +12,7 @@
 namespace Schema\Bundle;
 
 use Schema\Bundle\Command\GenerateSchemaEntityCommand;
+use Schema\Bundle\Command\InitSchemaDataCommand;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\Console\Application;
 
@@ -23,6 +24,7 @@ class SchemaBundle extends Bundle
 	public function registerCommands(Application $application)
 	{
 		$application->add(new GenerateSchemaEntityCommand());
+		$application->add(new InitSchemaDataCommand());
 	}
 }
 
