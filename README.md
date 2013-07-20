@@ -95,8 +95,15 @@ Certainly, it is just like what doctrine said. Such automatic tool should be onl
 * array, object
 * guid, blob
 
+Supported commands
+------------------
+* schema:generate:entity -- generate entity by schema definition (an ini file)
+* schema:init:data -- import fixture data from a csv file
+
 ChangeLog
 ----------
+* v0.0.1-v0.0.2:
+  * add import fixture data in a simple way. see more: `php app/console schema:init:data --help`
 
 Contact
 --------
@@ -106,11 +113,11 @@ And this guy is also searching for a job which could be:
 
 * Sr. php programmer
 * php team leader
-* manager of php department
+* nodejs developer
 
-Prefer salary between 14k to 22k.
+Prefer salary between 14k to 22k (RMB)
 
 timezone: GMT+0800  
-pubdate: 2013-07-12
+update: 2013-07-20
 
 [me]:http://bbish.net
