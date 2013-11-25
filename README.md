@@ -2,6 +2,9 @@ PHP Schema
 ============
 This project is for symfony php framework, specially for symfony + doctrine.
 
+
+**Notice: this project won't be handled. It is replaced by [Taichi\Basic\Entity](https://github.com/WWGit/php-taichi-basic) which has the same logic but not reply on symfony framework**
+
 Intro
 -----
 The thinking of this project has a very long history in my mind. But it comes true just in these few days.
